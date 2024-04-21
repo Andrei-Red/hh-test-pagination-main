@@ -1,8 +1,9 @@
 import Head from "next/head";
+import React from "react";
 import {Inter} from "next/font/google";
-import Table from "react-bootstrap/Table";
 import {Alert, Container} from "react-bootstrap";
 import {GetServerSideProps, GetServerSidePropsContext} from "next";
+import {CustomTable} from "@/table/customTabele";
 
 const inter = Inter({subsets: ["latin"]});
 
@@ -20,7 +21,6 @@ type TGetServerSideProps = {
   users: TUserItem[]
 }
 
-
 export const getServerSideProps = (async (ctx: GetServerSidePropsContext): Promise<{ props: TGetServerSideProps }> => {
   try {
     const res = await fetch("http://localhost:3000/users", {method: 'GET'})
@@ -37,55 +37,42 @@ export const getServerSideProps = (async (ctx: GetServerSidePropsContext): Promi
 }) satisfies GetServerSideProps<TGetServerSideProps>
 
 
-export default function Home({statusCode, users}: TGetServerSideProps) {
+const userValues = {
+  id: {title: 'ID', key: 'id'},
+  firstname: {title: 'Имя', key: 'firstname'},
+  lastname: {title: 'Фамилия', key: 'lastname'},
+  phone: {title: 'Телефон', key: 'phone'},
+  email: {title: 'Email', key: 'email'},
+  updatedAt: {title: 'Дата обновления', key: 'updatedAt'}
+}
+
+
+export default function Home({ statusCode, users }: TGetServerSideProps) {
   if (statusCode !== 200) {
-    return <Alert variant={'danger'}>Ошибка {statusCode} при загрузке данных</Alert>
+    return <Alert variant={'danger'}>Ошибка {statusCode} при загрузке данных</Alert>;
   }
 
   return (
-    <>
-      <Head>
-        <title>Тестовое задание</title>
-        <meta name="description" content="Тестовое задание"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link rel="icon" href="/favicon.ico"/>
-      </Head>
+      <>
+        <Head>
+          <title>Тестовое задание</title>
+          <meta name="description" content="Тестовое задание"/>
+          <meta name="viewport" content="width=device-width, initial-scale=1"/>
+          <link rel="icon" href="/favicon.ico"/>
+        </Head>
 
-      <main className={inter.className}>
-        <Container>
-          <h1 className={'mb-5'}>Пользователи</h1>
-
-          <Table striped bordered hover>
-            <thead>
-            <tr>
-              <th>ID</th>
-              <th>Имя</th>
-              <th>Фамилия</th>
-              <th>Телефон</th>
-              <th>Email</th>
-              <th>Дата обновления</th>
-            </tr>
-            </thead>
-            <tbody>
+        <main className={inter.className}>
+          <Container>
+            <h1 className={'mb-5'}>Пользователи</h1>
+            {/*// Rerender only CustomTable*/}
             {
-              users.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.firstname}</td>
-                  <td>{user.lastname}</td>
-                  <td>{user.phone}</td>
-                  <td>{user.email}</td>
-                  <td>{user.updatedAt}</td>
-                </tr>
-              ))
+              (users && userValues) ?
+                <CustomTable dataSource={users} displayValues={userValues}/> :
+                null
             }
-            </tbody>
-          </Table>
-
-          {/*TODO add pagination*/}
-
-        </Container>
-      </main>
-    </>
+            {/*// Rerender only CustomTable*/}
+          </Container>
+        </main>
+      </>
   );
 }

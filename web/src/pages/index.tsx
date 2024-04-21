@@ -64,9 +64,13 @@ export default function Home({ statusCode, users }: TGetServerSideProps) {
         <main className={inter.className}>
           <Container>
             <h1 className={'mb-5'}>Пользователи</h1>
-            {/*// Render only CustomTable*/}
-            <CustomTable dataSource={users} displayValues={userValues}/>
-            {/*// Render only CustomTable*/}
+            {/*// Rerender only CustomTable*/}
+            {
+              (users && userValues) ?
+                <CustomTable dataSource={users} displayValues={userValues}/> :
+                null
+            }
+            {/*// Rerender only CustomTable*/}
           </Container>
         </main>
       </>

@@ -22,10 +22,6 @@ export const CustomTable: React.FC<{
 }> = ({dataSource, displayValues}) => {
     const [currentPage, setCurrentPage] = useState(START_PAGE);
 
-    if(!dataSource || !displayValues) {
-        return
-    }
-
     const keyOfDisplayValues = Object.keys(displayValues)
     const totalPages = Math.ceil(dataSource.length / LIMIT_PAGES);
 
